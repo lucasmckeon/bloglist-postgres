@@ -1,4 +1,4 @@
-import { Blog } from './src/Model/Blog';
+import { Blog } from './src/models/Blog';
 
 const main = async () => {
   const blogs = await Blog.findAll();

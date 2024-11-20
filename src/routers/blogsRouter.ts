@@ -1,5 +1,5 @@
 import express, { Request } from 'express';
-import { Blog } from '../Model/Blog';
+import { Blog } from '../models/Blog';
 
 const blogsRouter = express.Router();
 blogsRouter.get('/', async (_req, res) => {
@@ -20,4 +20,20 @@ blogsRouter.delete('/:id', async (req, res) => {
   await Blog.destroy({ where: { id } });
   res.status(200).send();
 });
+blogsRouter.put(
+  '/:id',
+  async (req: Request<{ id: string }, unknown, { likes: number }>, res) => {
+    const id = req.params.id;
+    const likes = req.body.likes;
+    const [affectedCount, updatedBlog] = await Blog.update(
+      { likes },
+      { where: { id }, returning: true }
+    );
+    if (affectedCount === 0) {
+      res.status(404).json({ message: 'Blog not found so no update occurred' });
+      return;
+    }
+    res.json(updatedBlog[0]);
+  }
+);
 export { blogsRouter };

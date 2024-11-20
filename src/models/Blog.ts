@@ -1,7 +1,6 @@
 import { Model, DataTypes } from 'sequelize';
-import { sequelize } from '../config';
+import { sequelize } from '../util/db';
 
-// Define the interface for the attributes of Blog
 interface BlogAttributes {
   id: number;
   author: string;
@@ -10,7 +9,6 @@ interface BlogAttributes {
   likes: number;
 }
 
-// Extend the Model class with BlogAttributes
 class Blog extends Model<BlogAttributes> implements BlogAttributes {
   public id!: number;
   public author!: string;
