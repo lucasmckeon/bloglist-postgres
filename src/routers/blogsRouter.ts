@@ -1,5 +1,5 @@
 import express, { Request } from 'express';
-import { Blog } from '../models/Blog';
+import { Blog } from '../models/blog';
 
 const blogsRouter = express.Router();
 blogsRouter.get('/', async (_req, res) => {

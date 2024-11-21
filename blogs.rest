@@ -16,3 +16,24 @@ content-type:application/json
   "title": "Testss",
   "likes": 24
 }
+
+###
+POST http://localhost:3001/api/users
+content-type:application/json
+
+{
+  "name": "Test User",
+  "username": "testuser",
+  "password": "password"
+}
+
+###
+DELETE http://localhost:3001/api/users/1
+
+###
+PUT http://localhost:3001/api/users/testuser
+content-type:application/json
+
+{
+  "username": "updatedtestusername"
+} 

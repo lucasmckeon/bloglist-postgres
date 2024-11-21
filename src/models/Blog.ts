@@ -48,6 +48,6 @@ Blog.init(
     modelName: 'blog',
   }
 );
-//void Blog.sync();
+void Blog.sync();
 
 export { Blog };
