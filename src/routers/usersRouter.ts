@@ -23,9 +23,7 @@ userRouter.put(
     req: BloglistRequest<{ username: string }, unknown, { username: string }>,
     res
   ) => {
-    const user = await User.findOne({
-      where: { username: req.params.username },
-    });
+    const user = req.user;
     if (!user) throw new Error('User not found');
     user.username = req.body.username;
     const savedUser = await user.save();
@@ -33,9 +31,8 @@ userRouter.put(
   }
 );
 
-userRouter.delete('/:id', async (req, res) => {
+userRouter.delete('/:id', tokenExtractor, userExtractor, async (req, res) => {
   const id = req.params.id;
-  console.log('ID HERE', id);
   const result = await User.destroy({ where: { id } });
   if (result !== 1) throw new Error('Delete User failed');
   res.status(200).send();

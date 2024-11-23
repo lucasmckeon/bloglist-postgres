@@ -59,7 +59,7 @@ User.init(
       attributes: { exclude: ['password'] },
     },
     scopes: {
-      withPassord: {
+      withPassword: {
         attributes: { include: ['password'] },
       },
     },

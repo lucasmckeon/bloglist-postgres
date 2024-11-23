@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express';
+import { NextFunction, Response } from 'express';
 import { BloglistRequest } from '../models/types';
 import { SECRET } from './config';
 import jwt from 'jsonwebtoken';
@@ -60,6 +60,8 @@ const tokenExtractor = (
   const authorization = req.get('authorization');
   if (authorization && authorization.startsWith('Bearer ')) {
     req.token = authorization.replace('Bearer ', '');
+  } else {
+    throw new Error('No token');
   }
   next();
 };
