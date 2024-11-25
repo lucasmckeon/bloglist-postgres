@@ -4,15 +4,16 @@ import { SECRET } from './config';
 import jwt from 'jsonwebtoken';
 import { SanitizedUserAttributes, User } from '../models/user';
 import { z } from 'zod';
+import { CustomError } from './CustomError';
 
 // Define Zod schema for SanitizedUserAttributes
 const SanitizedUserAttributesSchema = z.object({
   id: z.number(),
   name: z.string(),
-  username: z.string(),
+  username: z.string().email({ message: 'Username must be email' }),
 });
 
-// Custom function to verify JWT and validate payload using Zod
+// Validate payload with Zod as it can't be done with Sequelize
 function verifyJwtWithZod<T>(
   token: string,
   secret: string,
@@ -78,9 +79,11 @@ const errorHandler = (
   } else if (err.name === 'SequelizeDatabaseError') {
     res.status(422).send({ error: err.message });
     return;
+  } else if (err instanceof CustomError) {
+    res.status(err.status).send({ error: err.message });
+    return;
   }
-  console.log('Error:', err.message, err.name);
-  res.status(500).send();
+  res.status(500).send({ error: err.message });
 };
 
 export { errorHandler, tokenExtractor, userExtractor };

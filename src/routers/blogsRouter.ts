@@ -1,9 +1,13 @@
 import express, { Request } from 'express';
-import { Blog } from '../models/blog';
-
+import { Blog, User } from '../models';
+import { tokenExtractor, userExtractor } from '../util/middleware';
+import { BloglistRequest } from '../models/types';
+import { CustomError } from '../util/CustomError';
 const blogsRouter = express.Router();
 blogsRouter.get('/', async (_req, res) => {
-  const blogs = await Blog.findAll();
+  const blogs = await Blog.findAll({
+    include: { model: User, attributes: ['name'] },
+  });
   res.json(blogs);
 });
 blogsRouter.get('/:id', async (req, res) => {
@@ -11,15 +15,37 @@ blogsRouter.get('/:id', async (req, res) => {
   if (blog) res.json(blog);
   else res.status(404).end();
 });
-blogsRouter.post('/', async (req: Request<unknown, unknown, Blog>, res) => {
-  const blog = await Blog.create(req.body);
-  res.json(blog);
-});
-blogsRouter.delete('/:id', async (req, res) => {
-  const id = req.params.id;
-  await Blog.destroy({ where: { id } });
-  res.status(200).send();
-});
+blogsRouter.post(
+  '/',
+  tokenExtractor,
+  userExtractor,
+  async (req: BloglistRequest<unknown, unknown, Blog>, res) => {
+    const user = req.user;
+    if (!user) {
+      throw new CustomError('Logged in user needed to create blog post', 401);
+    }
+    const blog = await Blog.create({ ...req.body, userId: user.id });
+    res.json(blog);
+  }
+);
+blogsRouter.delete(
+  '/:id',
+  tokenExtractor,
+  userExtractor,
+  async (req: BloglistRequest<{ id: string }, unknown, Blog>, res) => {
+    const id = req.params.id;
+    const user = req.user;
+    //TODO make custom errors
+    if (!user) {
+      throw new CustomError('Need logged in user to delete blog post', 401);
+    }
+    const result = await Blog.destroy({ where: { id, userId: user.id } });
+    if (result === 0) {
+      throw new CustomError('Blog not found or not authorized to delete', 404);
+    }
+    res.status(200).send();
+  }
+);
 blogsRouter.put(
   '/:id',
   async (req: Request<{ id: string }, unknown, { likes: number }>, res) => {

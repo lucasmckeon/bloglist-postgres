@@ -31,6 +31,10 @@ User.init(
     },
     username: {
       type: DataTypes.STRING,
+      unique: true,
+      validate: {
+        isEmail: true,
+      },
       allowNull: false,
     },
     password: {
@@ -68,5 +72,4 @@ User.init(
 User.prototype.toJSON = function () {
   return excludeField(this.get(), 'password');
 };
-void User.sync();
 export { User, SanitizedUserAttributes };

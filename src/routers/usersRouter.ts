@@ -1,12 +1,18 @@
 import express, { Request } from 'express';
-import { User } from '../models/user';
+import { Blog, User } from '../models';
 import { excludeField } from '../util/util';
 import { tokenExtractor, userExtractor } from '../util/middleware';
 import { BloglistRequest } from '../models/types';
+import { CustomError } from '../util/CustomError';
 
 const userRouter = express.Router();
 userRouter.get('/', async (_req, res) => {
-  const users = await User.findAll();
+  const users = await User.findAll({
+    include: {
+      model: Blog,
+      attributes: { exclude: ['userId'] },
+    },
+  });
   res.json(users);
 });
 
@@ -24,19 +30,30 @@ userRouter.put(
     res
   ) => {
     const user = req.user;
-    if (!user) throw new Error('User not found');
+    if (!user) throw new CustomError('User not found', 404);
     user.username = req.body.username;
     const savedUser = await user.save();
     res.json(serializeUser(savedUser));
   }
 );
 
-userRouter.delete('/:id', tokenExtractor, userExtractor, async (req, res) => {
-  const id = req.params.id;
-  const result = await User.destroy({ where: { id } });
-  if (result !== 1) throw new Error('Delete User failed');
-  res.status(200).send();
-});
+userRouter.delete(
+  '/:id',
+  tokenExtractor,
+  userExtractor,
+  async (
+    req: BloglistRequest<{ id: string }, unknown, { username: string }>,
+    res
+  ) => {
+    const id = req.params.id;
+    if (parseInt(id) !== req.user?.id) {
+      throw new CustomError('Only logged in user can delete themselves.', 401);
+    }
+    const result = await User.destroy({ where: { id } });
+    if (result !== 1) throw new CustomError('Delete User failed', 500);
+    res.status(200).send();
+  }
+);
 
 function serializeUser(user: User): Omit<User, 'password'> {
   return excludeField(user.toJSON(), 'password');

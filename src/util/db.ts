@@ -7,5 +7,6 @@ const sequelize = new Sequelize(DATABASE_URL, {
       rejectUnauthorized: false,
     },
   },
+  logging: false,
 });
 export { sequelize };

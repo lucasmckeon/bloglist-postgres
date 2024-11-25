@@ -7,6 +7,7 @@ interface BlogAttributes {
   title: string;
   url: string;
   likes: number;
+  userId: number;
 }
 
 class Blog extends Model<BlogAttributes> implements BlogAttributes {
@@ -15,6 +16,7 @@ class Blog extends Model<BlogAttributes> implements BlogAttributes {
   public title!: string;
   public url!: string;
   public likes!: number;
+  public userId!: number;
 }
 
 Blog.init(
@@ -40,6 +42,11 @@ Blog.init(
       type: DataTypes.INTEGER,
       defaultValue: 0,
     },
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: 'users', key: 'id' },
+    },
   },
   {
     sequelize,
@@ -48,6 +55,5 @@ Blog.init(
     modelName: 'blog',
   }
 );
-void Blog.sync();
 
 export { Blog };
