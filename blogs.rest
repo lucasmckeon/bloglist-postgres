@@ -12,13 +12,13 @@ content-type:application/json
 ###
 POST http://localhost:3001/api/blogs
 content-type:application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3R1c2VyQGdtYWlsLmNvbSIsIm5hbWUiOiJUZXN0IFVzZXIiLCJpZCI6MSwiaWF0IjoxNzMyNTcyMDM0LCJleHAiOjE3MzI1NzU2MzR9.kLqdgzrPPN3odm0CKpPFwIO7FWh4oMiThpbV3ex4ggM
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3R1c2VyQGdtYWlsLmNvbSIsIm5hbWUiOiJUZXN0IFVzZXIiLCJpZCI6MSwiaWF0IjoxNzMyNjU2MjU4LCJleHAiOjE3MzI2NTk4NTh9.apUkHV825ILDiURj_k3vgdXBhqSpNtxeRDssTjZwR48
 
 {
-  "author":"Test Author",
-  "title": "Testss",
+  "author":"Another Author",
+  "title": "React",
   "url":"test.com",
-  "likes": 24
+  "likes": 5
 }
 
 ###
@@ -26,8 +26,8 @@ POST http://localhost:3001/api/users
 content-type:application/json
 
 {
-  "name": "Test User",
-  "username": "testuser@gmail.com",
+  "name": "User 2",
+  "username": "testuser2@gmail.com",
   "password": "password"
 }
 

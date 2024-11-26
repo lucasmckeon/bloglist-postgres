@@ -3,10 +3,16 @@ import { Blog, User } from '../models';
 import { tokenExtractor, userExtractor } from '../util/middleware';
 import { BloglistRequest } from '../models/types';
 import { CustomError } from '../util/CustomError';
+import { Op } from 'sequelize';
 const blogsRouter = express.Router();
-blogsRouter.get('/', async (_req, res) => {
+blogsRouter.get('/', async (req, res) => {
+  if (req.query.search && !(typeof req.query.search === 'string')) {
+    throw new CustomError('Search query must be a string', 422);
+  }
+  const query = req.query.search || '';
   const blogs = await Blog.findAll({
     include: { model: User, attributes: ['name'] },
+    where: { title: { [Op.iLike]: `%${query}%` } },
   });
   res.json(blogs);
 });
