@@ -9,10 +9,18 @@ blogsRouter.get('/', async (req, res) => {
   if (req.query.search && !(typeof req.query.search === 'string')) {
     throw new CustomError('Search query must be a string', 422);
   }
-  const query = req.query.search || '';
+  const where: Record<PropertyKey, unknown> = {};
+  const query = req.query.search;
+  if (query) {
+    where[Op.or] = [
+      { title: { [Op.iLike]: `%${query}%` } },
+      { author: { [Op.iLike]: `%${query}%` } },
+    ];
+  }
   const blogs = await Blog.findAll({
     include: { model: User, attributes: ['name'] },
-    where: { title: { [Op.iLike]: `%${query}%` } },
+    order: [['likes', 'DESC']],
+    where,
   });
   res.json(blogs);
 });
