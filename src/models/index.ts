@@ -1,10 +1,11 @@
-import { Blog } from './blog';
 import { User } from './user';
+import { Blog } from './blog';
 
 //Avoid circular dependency by doing this in index.ts
+// const initializeModels = () => {
+// User.hasMany(Blog);
+// Blog.belongsTo(User);
+// };
 User.hasMany(Blog);
 Blog.belongsTo(User);
-void User.sync({ alter: true, logging: false });
-void Blog.sync({ alter: true, logging: false });
-
 export { Blog, User };
