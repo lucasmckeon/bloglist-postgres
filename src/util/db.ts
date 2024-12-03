@@ -1,7 +1,6 @@
 import { Sequelize } from 'sequelize';
 import { DATABASE_URL } from './config';
-import { Umzug, SequelizeStorage } from 'umzug';
-//import { initializeModels } from '../models';
+// import { Umzug, SequelizeStorage } from 'umzug';
 const sequelize = new Sequelize(DATABASE_URL, {
   dialectOptions: {
     ssl: {
@@ -11,10 +10,11 @@ const sequelize = new Sequelize(DATABASE_URL, {
   },
   logging: false,
 });
+/*
 const runMigrations = async () => {
   const migrator = new Umzug({
     migrations: {
-      glob: 'migrations/*.ts', // Path to your migration files
+      glob: 'migrations/*.ts', // Path to your migration files,
     },
     storage: new SequelizeStorage({ sequelize, tableName: 'migrations' }),
     context: sequelize.getQueryInterface(),
@@ -40,4 +40,5 @@ const connectToDatabase = async () => {
 
   return null;
 };
-export { sequelize, connectToDatabase };
+*/
+export { sequelize };
